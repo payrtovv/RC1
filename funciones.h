@@ -7,32 +7,25 @@ int CantidadLibros[MAXLETRAS];
 char NombresLibros[MAXLIBROS][MAXLETRAS];
 float PrecioLibros[MAXLETRAS];
 
-char NombresClientes[MAXLIBROS][MAXLETRAS];
-int cedulasClientes[MAXLIBROS];
-float ValoresPagados[MAXLIBROS];
-int cantidadDeProductosComprados[MAXLIBROS];
-char NombresClientesCompras[MAXLIBROS][MAXLETRAS];
-
 void IngresarNuevolibro(int*);
 void buscarLibro(char[MAXLETRAS], int);
 void EliminarLibro(char[MAXLETRAS], int);
 void EditarLibro( char[MAXLETRAS], int);
 void aumentarStock(char[MAXLETRAS], int);
+void mostrarLibros(int );
 
 void limpiarBufferEntrada();
 
-void facturar(int [MAXLETRAS][2], int [MAXLIBROS], int* , int, int);
-
-
-void fac(int, int );
-
-void buscarFactura(int [MAXLIBROS][2], int [MAXLETRAS], int);
-
+void facturar(char [MAXLIBROS][MAXLETRAS], int [MAXLIBROS],char [MAXLIBROS][MAXLETRAS], int [MAXLIBROS], float [MAXLIBROS] ,int [MAXLETRAS][2], int [MAXLIBROS], int* , int, int);
+void fac(int [MAXLIBROS], float [MAXLIBROS]  ,int, int );
+void buscarFactura(int [MAXLIBROS], char [MAXLIBROS][MAXLETRAS], int [MAXLIBROS], float [MAXLIBROS] ,int [MAXLIBROS][2], int [MAXLETRAS], int);
 void fechafun(int [MAXLIBROS][2] , int);
+void ListadoFacturas(char [MAXLIBROS][MAXLETRAS], int [MAXLIBROS], float [MAXLIBROS]  ,int, int [MAXLETRAS], int [MAXLIBROS][2]);
 
-void ListadoFacturas(int, int [MAXLETRAS], int [MAXLIBROS][2]);
-
-void ingresarCliente(int* );
+void ingresarCliente(char [MAXLIBROS][MAXLETRAS], int [MAXLIBROS], int* );
+void editarCliente(char [MAXLIBROS][MAXLETRAS], int [MAXLIBROS], char[MAXLETRAS],int);
+void buscarCliente(char [MAXLIBROS][MAXLETRAS], int [MAXLIBROS], char[MAXLETRAS],int);
+void mostrarClientes(char [MAXLIBROS][MAXLETRAS], int [MAXLIBROS], int);
 
 void GuardarArchivoLibros(int);
 
@@ -42,17 +35,13 @@ void GuardarPunteros(int, int, int);
 
 void CargarPunteros(int*, int*, int*);
 
-void GuardarArchivoClientes(int );
+void GuardarArchivoClientes(char [MAXLIBROS][MAXLETRAS], int, int [MAXLIBROS]);
 
-void CargarArchivoClientes(int );
+void CargarArchivoClientes(char [MAXLIBROS][MAXLETRAS], int, int [MAXLIBROS] );
 
-void GuardarArchivoCompras(int , int [MAXLIBROS][2], int []);
+void GuardarArchivoCompras(char [MAXLIBROS][MAXLETRAS], int [MAXLIBROS] , float [MAXLIBROS], int , int [MAXLIBROS][2], int []);
 
-void CargarArchivoCompras(int , int [MAXLIBROS][2],int []);
+void CargarArchivoCompras(char [MAXLIBROS][MAXLETRAS], int [MAXLIBROS] ,float [MAXLIBROS],int , int [MAXLIBROS][2],int []);
 
-void ingresarCliente(int*);
-void editarCliente(char[MAXLETRAS],int);
-void buscarCliente(char[MAXLETRAS],int);
-void mostrarClientes(int);
+int leerCedula(char* ); 
 
-void mostrarLibros(int );

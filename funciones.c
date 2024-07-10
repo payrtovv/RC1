@@ -1,5 +1,6 @@
 #include<string.h>
 #include<stdio.h>
+#include <stdlib.h>
 
 #include "lecturas.h"
 #include "funciones.h"
@@ -46,7 +47,7 @@ void CargarArchivoLibros(int LibrosIngresados){
     fclose(archivo);
 }    
 
-void GuardarArchivoCompras(int NumeroDeCompras, int fechas[MAXLIBROS][2],int CedulasCompras[MAXLIBROS]){
+void GuardarArchivoCompras(char NombresClientesCompras[MAXLIBROS][MAXLETRAS], int cantidadDeProductosComprados[MAXLIBROS], float ValoresPagados[MAXLIBROS] ,int NumeroDeCompras, int fechas[MAXLIBROS][2],int CedulasCompras[MAXLIBROS]){
     archivoCompras = fopen("compras.txt", "w");    
     if (archivoCompras == NULL) {
         printf("No se pudo abrir el archivo con exito\n");
@@ -61,7 +62,7 @@ void GuardarArchivoCompras(int NumeroDeCompras, int fechas[MAXLIBROS][2],int Ced
 }
 
 
-void CargarArchivoCompras(int NumeroDeCompras, int fechas[MAXLIBROS][2],int CedulasCompras[MAXLIBROS]){
+void CargarArchivoCompras(char NombresClientesCompras[MAXLIBROS][MAXLETRAS], int cantidadDeProductosComprados[MAXLIBROS] ,float ValoresPagados[MAXLIBROS], int NumeroDeCompras, int fechas[MAXLIBROS][2],int CedulasCompras[MAXLIBROS]){
     archivoCompras = fopen("compras.txt", "r");
     if (archivoCompras == NULL) {
         printf("No se pudo abrir el archivo con exito\n");
@@ -80,7 +81,7 @@ void CargarArchivoCompras(int NumeroDeCompras, int fechas[MAXLIBROS][2],int Cedu
 
 
 
-void GuardarArchivoClientes(int ClientesIngresados){
+void GuardarArchivoClientes(char NombresClientes[MAXLIBROS][MAXLETRAS], int ClientesIngresados, int cedulasClientes[MAXLIBROS]){
     archivoClientes = fopen("clientes.txt", "w");    
     if (archivoClientes == NULL) {
         printf("No se pudo abrir el archivo con exito\n");
@@ -97,7 +98,7 @@ void GuardarArchivoClientes(int ClientesIngresados){
 
 
 
-void CargarArchivoClientes(int ClientesIngresados){
+void CargarArchivoClientes(char NombresClientes[MAXLIBROS][MAXLETRAS], int ClientesIngresados, int cedulasClientes[MAXLIBROS]){
     archivoClientes = fopen("clientes.txt", "r");
     if (archivoClientes == NULL) {
         printf("No se pudo abrir el archivo con exito\n");
@@ -262,9 +263,9 @@ void aumentarStock(char buscar[MAXLETRAS], int LibrosIngresados){
     printf("<---------------------------->\n");
 }
 
-void facturar(int fechas[MAXLIBROS][2], int CedulasCompras[MAXLIBROS],int* NumeroDeCompras, int ClientesIngresados, int LibrosIngresados){
+void facturar(char NombresClientes[MAXLIBROS][MAXLETRAS], int cedulasClientes[MAXLIBROS], char NombresClientesCompras[MAXLIBROS][MAXLETRAS], int cantidadDeProductosComprados[MAXLIBROS], float ValoresPagados[MAXLIBROS] ,int fechas[MAXLIBROS][2], int CedulasCompras[MAXLIBROS],int* NumeroDeCompras, int ClientesIngresados, int LibrosIngresados){
     int buscarcedula=0;
-    buscarcedula = leerEnteroPositivo("Ingrese el numero de cedula: \n");
+    buscarcedula = leerCedula("Ingrese el numero de cedula: \n");
     for (int i = 0; i < ClientesIngresados; i++)
     {
         if (buscarcedula==cedulasClientes[i])
@@ -273,7 +274,7 @@ void facturar(int fechas[MAXLIBROS][2], int CedulasCompras[MAXLIBROS],int* Numer
             fechafun(fechas, *NumeroDeCompras);
             CedulasCompras[*NumeroDeCompras] = buscarcedula;
             strcpy(NombresClientesCompras[*NumeroDeCompras], NombresClientes[i]);
-            fac(LibrosIngresados, *NumeroDeCompras);
+            fac(cantidadDeProductosComprados,ValoresPagados, LibrosIngresados, *NumeroDeCompras);
             (*NumeroDeCompras)++;
             return;
         }
@@ -284,7 +285,7 @@ void facturar(int fechas[MAXLIBROS][2], int CedulasCompras[MAXLIBROS],int* Numer
 }
 
 
-void fac(int LibrosIngresados, int NumeroDeCompras){
+void fac(int cantidadDeProductosComprados[MAXLIBROS], float ValoresPagados[MAXLIBROS]  ,int LibrosIngresados, int NumeroDeCompras){
     char buscar[MAXLETRAS];
     int respuesta = 1;
     float valor = 0;
@@ -303,8 +304,8 @@ void fac(int LibrosIngresados, int NumeroDeCompras){
                 int cantidad=0;
                 printf("Encontrado\n");
                 cantidad = leerEnteroPositivo("Ingresar la cantidad de libros a vender: \n");
-                if((CantidadLibros[i]- cantidad) < 0){
-                    printf("No hay sufiscientes");
+                if((CantidadLibros[i]- cantidad) <= 0){
+                    printf("No hay sufiscientes\n");
                     return;
                 }
                 valor = cantidad * PrecioLibros[i];
@@ -324,10 +325,10 @@ void fac(int LibrosIngresados, int NumeroDeCompras){
     printf("<-------------------------->\n");
 }
 
-void buscarFactura(int fechas[MAXLIBROS][2], int CedulasCompras[], int NumeroDeCompras){
+void buscarFactura(int cedulasClientes[MAXLIBROS], char NombresClientesCompras[MAXLIBROS][MAXLETRAS], int cantidadDeProductosComprados[MAXLIBROS], float ValoresPagados[MAXLIBROS] ,int fechas[MAXLIBROS][2], int CedulasCompras[], int NumeroDeCompras){
     int buscarcedula=0;
 
-    buscarcedula = leerEntero("Ingresar la cedula del cliente: ");
+    buscarcedula = leerCedula("Ingresar la cedula del cliente: ");
     for (int i = 0; i < NumeroDeCompras; i++)
     {
         if (buscarcedula==cedulasClientes[i])
@@ -348,7 +349,7 @@ void buscarFactura(int fechas[MAXLIBROS][2], int CedulasCompras[], int NumeroDeC
     }
 }
 
-void ListadoFacturas(int NumeroDeCompras, int CedulasCompras[], int fechas[MAXLIBROS][2]){
+void ListadoFacturas(char NombresClientesCompras[MAXLIBROS][MAXLETRAS], int cantidadDeProductosComprados[MAXLIBROS], float ValoresPagados[MAXLIBROS]  ,int NumeroDeCompras, int CedulasCompras[], int fechas[MAXLIBROS][2]){
     for (int i = 0; i < NumeroDeCompras; i++)
     {
             printf("fecha: ");
@@ -414,8 +415,51 @@ void fechafun(int fechas[MAXLIBROS][2], int NumeroDeCompras){
     fechas[NumeroDeCompras][2] = anio;
     }
 
+int leerCedula(char* mensaje) {
+    char numCedula[11]; 
+    int respuesta = 0, cedula = 0;
+    do {
+        printf("%s", mensaje);
+        scanf("%s", numCedula);
+        
+        if (strlen(numCedula) != 10) {
+            printf("La cedula debe contener 10 digitos.\n");
+        } else {
+            int numRegion = (numCedula[0] - '0') * 10 + (numCedula[1] - '0');
+            int ultimoNum = numCedula[9] - '0';
+            int numPares = (numCedula[1] - '0') + (numCedula[3] - '0') + (numCedula[5] - '0') + (numCedula[7] - '0');
 
-void ingresarCliente(int* ClientesIngresados){
+            if (numRegion < 1 || numRegion > 24) {
+                printf("Cedula incorrecta.\n");
+            } else {
+                int vector[5];
+                for (int i = 0; i < 5; i++) {
+                    vector[i] = (numCedula[i * 2] - '0') * 2;
+                    if (vector[i] > 9) {
+                        vector[i] -= 9;
+                    }
+                }
+
+                int numImpares = vector[0] + vector[1] + vector[2] + vector[3] + vector[4];
+                int suma = numPares + numImpares;
+                int primerNum = suma / 10;
+                int deceneaInmediata = (primerNum + 1) * 10;
+                int numValidador = deceneaInmediata - suma;
+                if (numValidador == 10) {
+                    numValidador = 0;
+                }
+                if (numValidador == ultimoNum) {
+                    respuesta = 1;
+                    cedula = atoi(numCedula); 
+                } else {
+                    printf("Cedula incorrecta, intentelo nuevamente.\n");
+                }
+            }
+        }
+    } while (respuesta != 1);
+    return cedula;
+}
+void ingresarCliente(char NombresClientes[MAXLIBROS][MAXLETRAS], int cedulasClientes[MAXLIBROS], int* ClientesIngresados){
     char nombre[MAXLETRAS];
     if (*ClientesIngresados >= MAXPERSONAS) {
         printf("Numero maximo de clientes alcanzado. \n");
@@ -433,13 +477,13 @@ void ingresarCliente(int* ClientesIngresados){
         }
     }
     strcpy(NombresClientes[*ClientesIngresados], nombre);
-    cedulasClientes[*ClientesIngresados] = leerEnteroPositivo("Ingrese la cedula del cliente: ");
+    cedulasClientes[*ClientesIngresados] = leerCedula("Ingrese la cedula del cliente: ");
     printf("Cliente registrado con exito.\n");
     printf("<-------------------------->\n");
     (*ClientesIngresados)++;
 }
 
-void mostrarClientes(int ClientesIngresados){
+void mostrarClientes(char NombresClientes[MAXLIBROS][MAXLETRAS], int cedulasClientes[MAXLIBROS], int ClientesIngresados){
     printf("Lista de clientes Biblioteca Del Saber \n");
     for (int i = 0; i < ClientesIngresados; i++)
     {
@@ -448,7 +492,7 @@ void mostrarClientes(int ClientesIngresados){
         printf("<-------------------------->\n");
     }
 }
-void buscarCliente(char buscar[MAXLETRAS], int ClientesIngresados){
+void buscarCliente(char NombresClientes[MAXLIBROS][MAXLETRAS], int cedulasClientes[MAXLIBROS], char buscar[MAXLETRAS], int ClientesIngresados){
     printf("Ingrese el cliente a buscar: ");
     fgets(buscar,MAXLETRAS, stdin);
     strtok(buscar, "\n");
@@ -466,7 +510,7 @@ void buscarCliente(char buscar[MAXLETRAS], int ClientesIngresados){
     printf("Cliente no encontrado\n");
     printf("<-------------------------->\n");
 }
-void editarCliente(char buscar[MAXLETRAS], int ClientesIngresados){
+void editarCliente(char NombresClientes[MAXLIBROS][MAXLETRAS], int cedulasClientes[MAXLIBROS], char buscar[MAXLETRAS], int ClientesIngresados){
 
     printf("Ingrese el cliente a editar: ");
     fgets(buscar,MAXLETRAS, stdin);
@@ -478,7 +522,7 @@ void editarCliente(char buscar[MAXLETRAS], int ClientesIngresados){
             printf("Encontrado\n");
             printf("Nombre:   %s\n", NombresClientes[i]);
             printf("Cedula: %i\n", cedulasClientes[i]);
-            cedulasClientes[i]=leerEntero("Ingrese el numero de cedula");
+            cedulasClientes[i]=leerCedula("Ingrese el numero de cedula: ");
             printf("<-------------------------->\n");
             return;
         }
